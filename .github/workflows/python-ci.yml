@@ -5,10 +5,16 @@ on:
     branches: [
         "**"
     ]
+    paths:
+      - 'src/**'
+      - '.github/workflows/**'
   pull_request:
     branches: [
         "main"
     ]
+    paths:
+      - 'src/**'
+      - '.github/workflows/**'
 
 jobs:
 
@@ -25,16 +31,16 @@ jobs:
         run: |
           # 1. cd into src directory (or fail gracefully if it doesn't exist)
           cd src || { echo "matrix=[\"none\"]" >> $GITHUB_OUTPUT; exit 0; }
-          
+
           # 2. Find all directories (depth 1), strip the leading './', and convert to a JSON array
           # E.g. directories "users" and "payments" become '["users", "payments"]'
           DIRS_JSON=$(find . -maxdepth 1 -mindepth 1 -type d | sed 's|./||' | jq -R -s -c 'split("\n")[:-1]')
-          
+
           # 3. If src is completely empty, output a fallback placeholder so the matrix doesn't crash
           if [ "$DIRS_JSON" == "[]" ]; then
             DIRS_JSON='["placeholder"]'
           fi
-          
+
           echo "Discovered services: $DIRS_JSON"
           echo "matrix=$DIRS_JSON" >> $GITHUB_OUTPUT
 
