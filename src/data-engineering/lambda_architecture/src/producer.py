@@ -28,3 +28,5 @@ def generate_kafka_event():
         producer.send('ad_events_topic', value=event)
         print(f"Sent: {event}")
         time.sleep(0.1)
+
+generate_kafka_event()
